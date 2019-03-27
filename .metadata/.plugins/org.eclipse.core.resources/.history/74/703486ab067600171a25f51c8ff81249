@@ -1,0 +1,276 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
+import java.util.jar.Attributes.Name;
+
+import javax.imageio.stream.FileCacheImageInputStream;
+
+public class test {
+
+	public static void main(String[] args) throws FileNotFoundException {
+		String file = "src/Sample Input.csv";
+		// FirstComeFirstServed(file);
+		// ShortestJobFirst(file);
+		RoundRobin(file);
+
+	}
+
+	public static void FirstComeFirstServed(String file) throws FileNotFoundException {
+		Scanner input = new Scanner(new File(file));
+
+		File fileOut = new File("FIFS Schedular.txt");
+		PrintWriter outputStream = new PrintWriter(fileOut);
+
+		ArrayList<String> Names = new ArrayList<>();
+		ArrayList<Integer> arrivalTime = new ArrayList<>();
+		ArrayList<Integer> runTime = new ArrayList<>();
+		ArrayList<Integer> priority = new ArrayList<>();
+		ArrayList<Integer> waitingTime = new ArrayList<>();
+		ArrayList<Integer> turnaroundTime = new ArrayList<>();
+
+		while (input.hasNext()) {
+			String data = input.nextLine();
+			if (data.startsWith("Name")) {
+				continue;
+			} else {
+				String[] value = data.split(",");
+				Names.add(value[0]);
+				arrivalTime.add(Integer.parseInt(value[1]));
+				runTime.add(Integer.parseInt(value[2]));
+				priority.add(Integer.parseInt(value[3]));
+			}
+		}
+
+		int count = 0;
+		waitingTime.add(0);
+		for (int i = 1; i < Names.size(); i++) {
+
+			count = count + runTime.get(i - 1);
+			int time = count - arrivalTime.get(i);
+			waitingTime.add(time);
+
+		}
+
+		for (int i = 0; i < Names.size(); i++) {
+			int Ttime = waitingTime.get(i) + runTime.get(i);
+			turnaroundTime.add(Ttime);
+		}
+
+		int count1 = 0;
+		outputStream.println("Time->Name");
+		for (int i = 0; i < Names.size(); i++) {
+			for (int j = 0; j < runTime.get(i); j++) {
+				outputStream.println("T" + count1 + "->" + Names.get(i));
+				count1++;
+			}
+		}
+
+		outputStream.println("Name,Waiting Time,Trunaround Time");
+		for (int i = 0; i < Names.size(); i++) {
+			outputStream.println(Names.get(i) + "," + waitingTime.get(i) + "," + turnaroundTime.get(i));
+		}
+
+		int Sum = 0;
+		for (int i = 0; i < waitingTime.size(); i++) {
+			Sum = Sum + waitingTime.get(i);
+		}
+		double averageWaiting = ((double) Sum / (double) (waitingTime.size()));
+
+		int Sum1 = 0;
+		for (int i = 0; i < turnaroundTime.size(); i++) {
+			Sum1 = Sum1 + turnaroundTime.get(i);
+		}
+
+		double averageTurnaround = ((double) Sum1 / ((double) turnaroundTime.size()));
+
+		outputStream.println("Average TurnAround,Average Waiting");
+		outputStream.println(averageTurnaround + "," + averageWaiting);
+
+		outputStream.flush();
+		outputStream.close();
+
+	}
+
+	public static void ShortestJobFirst(String file) throws FileNotFoundException {
+		Scanner input = new Scanner(new File(file));
+
+		File fileOut = new File("ShortestJobFirst.txt");
+		PrintWriter outputStream = new PrintWriter(fileOut);
+
+		ArrayList<String> Names = new ArrayList<>();
+		ArrayList<String> Names1 = new ArrayList<>();
+		ArrayList<Integer> arrivalTime = new ArrayList<>();
+		ArrayList<Integer> runTime = new ArrayList<>();
+		ArrayList<Integer> runTime1 = new ArrayList<>();
+		ArrayList<Integer> priority = new ArrayList<>();
+		ArrayList<Integer> waitingTime = new ArrayList<>();
+		ArrayList<Integer> turnaroundTime = new ArrayList<>();
+
+		while (input.hasNext()) {
+			String data = input.nextLine();
+			if (data.startsWith("Name")) {
+				continue;
+			} else {
+				String[] value = data.split(",");
+				Names.add(value[0]);
+				arrivalTime.add(Integer.parseInt(value[1]));
+				runTime.add(Integer.parseInt(value[2]));
+				priority.add(Integer.parseInt(value[3]));
+			}
+
+		}
+
+		try {
+
+			int index = 0;
+			int count = 0;
+			outputStream.println("Time->Name");
+			while (!(Names.isEmpty())) {
+				int min = runTime.get(0);
+				for (int i = 0; i < runTime.size(); i++) {
+					if (runTime.get(i) < min) {
+						min = runTime.get(i);
+						index = i;
+					}
+				}
+
+				Names1.add(Names.get(index));
+				waitingTime.add(count);
+				for (int i = 0; i < min; i++) {
+					outputStream.println("T" + count + "->" + Names.get(index));
+					count++;
+				}
+				runTime1.add(runTime.get(index));
+
+				Names.remove(index);
+				arrivalTime.remove(index);
+				runTime.remove(index);
+
+				if (runTime.size() == 1) {
+					Names1.add(Names.get(0));
+					waitingTime.add(count);
+					for (int i = 0; i < runTime.get(0); i++) {
+						outputStream.println("T" + count + "->" + Names.get(0));
+						count++;
+					}
+					runTime1.add(runTime.get(0));
+				}
+			}
+		} catch (IndexOutOfBoundsException e) {
+			outputStream.println(" ");
+		}
+
+		for (int i = 0; i < Names1.size(); i++) {
+			int Ttime = waitingTime.get(i) + runTime1.get(i);
+			turnaroundTime.add(Ttime);
+		}
+
+		outputStream.println("Name,Waiting Time,Trunaround Time");
+		for (int i = 0; i < Names1.size(); i++) {
+			outputStream.println(Names1.get(i) + "," + waitingTime.get(i) + "," + turnaroundTime.get(i));
+		}
+
+		int Sum = 0;
+		for (int i = 0; i < waitingTime.size(); i++) {
+			Sum = Sum + waitingTime.get(i);
+		}
+		double averageWaiting = ((double) Sum / (double) (waitingTime.size()));
+
+		int Sum1 = 0;
+		for (int i = 0; i < turnaroundTime.size(); i++) {
+			Sum1 = Sum1 + turnaroundTime.get(i);
+		}
+
+		double averageTurnaround = ((double) Sum1 / ((double) turnaroundTime.size()));
+
+		outputStream.println("Average TurnAround,Average Waiting");
+		outputStream.println(averageTurnaround + "," + averageWaiting);
+
+		outputStream.flush();
+		outputStream.close();
+
+	}
+
+	public static void RoundRobin(String file) throws FileNotFoundException {
+		Scanner input = new Scanner(new File(file));
+
+		System.out.println("Please enter a suitable time quantum:");
+		Scanner sc = new Scanner(System.in);
+		int TimeQuantum = sc.nextInt();
+
+		File fileOut = new File("RoundRobin.txt");
+		PrintWriter outputStream = new PrintWriter(fileOut);
+
+		ArrayList<String> Names = new ArrayList<>();
+		ArrayList<Integer> arrivalTime = new ArrayList<>();
+		ArrayList<Integer> runTime = new ArrayList<>();
+		ArrayList<Integer> runTime1 = new ArrayList<>();
+		ArrayList<Integer> priority = new ArrayList<>();
+		ArrayList<Integer> waitingTime = new ArrayList<>();
+		ArrayList<Integer> turnaroundTime = new ArrayList<>();
+
+		while (input.hasNext()) {
+			String data = input.nextLine();
+			if (data.startsWith("Name")) {
+				continue;
+			} else {
+				String[] value = data.split(",");
+				Names.add(value[0]);
+				arrivalTime.add(Integer.parseInt(value[1]));
+				runTime.add(Integer.parseInt(value[2]));
+				runTime1.add(Integer.parseInt(value[2]));
+				priority.add(Integer.parseInt(value[3]));
+			}
+
+		}
+
+		int Time = 0;
+		outputStream.println("Time->Name");
+		int s = Names.size();
+		int[] finishTime = new int[s];
+
+		while (Collections.max(runTime) > 0) {
+			for (int i = 0; i < Names.size(); i++) {
+				for (int j = 0; j < TimeQuantum; j++) {
+					if (runTime.get(i) > 0) {
+						outputStream.println("T" + Time + "->" + Names.get(i));
+						runTime.set(i, (runTime.get(i) - 1));
+						if (runTime.get(i) == 0) {
+							finishTime[i] = Time;
+						}
+						Time++;
+					}
+				}
+			}
+		}
+
+
+		int count = 0;
+		for (int i = 0; i < Names.size(); i++) {
+			if (runTime1.get(i) < TimeQuantum) {
+				waitingTime.add(count);
+				count = count + runTime1.get(i);
+			}
+			else {
+			waitingTime.add(count);
+			count = count + TimeQuantum;
+			}
+		}
+		
+		for (int i = 0; i < waitingTime.size(); i++) {
+			System.out.println(waitingTime.get(i));
+		}
+
+		for (int i = 0; i < Names.size(); i++) {
+			int Ttime = finishTime[i] - waitingTime.get(i);
+			turnaroundTime.add(Ttime);
+		}
+
+		outputStream.flush();
+		outputStream.close();
+	}
+
+}

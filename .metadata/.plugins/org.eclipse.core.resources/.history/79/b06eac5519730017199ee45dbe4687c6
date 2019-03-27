@@ -1,0 +1,17 @@
+Nwhile (input.hasNext()) {
+			String data = input.nextLine();
+			if (data.startsWith("Name")) {
+				continue;
+			} else {
+				String[] value = data.split(",");
+				Names.add(value[0]);
+				arrivalTime.add(Integer.parseInt(value[1]));
+				runTime.add(Integer.parseInt(value[2]));
+				priority.add(Integer.parseInt(value[3]));
+			}
+		}ame,Arrival Time,Run Time,Priority
+P1,0,12,1
+P2,3,7,1
+P3,6,2,2
+P4,8,5,1
+P5,9,2,3

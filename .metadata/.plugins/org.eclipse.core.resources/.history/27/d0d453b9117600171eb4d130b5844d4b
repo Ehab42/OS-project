@@ -1,0 +1,28 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
+import java.util.jar.Attributes.Name;
+
+import javax.imageio.stream.FileCacheImageInputStream;
+
+//The code below assumes that the input is in ascending order regarding the arrival time.
+public class test {
+
+	public static void main(String[] args) throws FileNotFoundException {
+		String file = "src/Input.txt";
+		// FirstComeFirstServed(file);
+		// ShortestJobFirst(file);
+		RoundRobin(file);
+
+	}
+
+	
+
+	
+
+	
+
+}

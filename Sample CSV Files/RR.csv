@@ -1,0 +1,37 @@
+Time,Name
+T0,P1
+T1,P1
+T2,P1
+T3,P1
+T4,P2
+T5,P2
+T6,P1
+T7,P1
+T8,P3
+T9,P3
+T10,P2
+T11,P2
+T12,P4
+T13,P4
+T14,P1
+T15,P1
+T16,P5
+T17,P5
+T18,P2
+T19,P2
+T20,P4
+T21,P4
+T22,P1
+T23,P1
+T24,P2
+T25,P4
+T26,P1
+T27,P1
+Name,Waiting Time,Trunaround Time
+P1,16,28
+P2,15,22
+P3,2,4
+P4,13,18
+P5,7,9
+Average TurnAround,Average Waiting
+16.2,10.6
